@@ -1,6 +1,7 @@
-# Clusters-size introduction
+# Clusters-size 
 Tkinter GUI to estimate the gas clusters size when expanding into the vacuum after passing through a nozzle.
 
+# Introduction
 A Gas cluster is a small particle that can contain 100 to 10 000 atoms bound together by Van Der Waals forces. Neutral clusters are produced in a supersonic expansion where a high pressure of gas is forced through a nozzle. The gas undergoes an adiabatic expansion and the clusters are formed upon cooling.
 The interaction of laser pulses with clusters is an active area of research. Moreover, cluster beams began to be extensively used for secondary-ion mass spectrometry. In each application, the cluster size is critical [1].
 
@@ -8,6 +9,7 @@ The gas properties, temperature, backing pressure and nozzle geometry affect the
   
   
 ![Hagena equations](https://user-images.githubusercontent.com/80101412/154300373-5791172a-a7a4-4251-8711-387bb6626da7.png)
+
 *Fig. 1. Hagena parameter and average cluster size equations.*
 
 Several experiments were performed to determine the constants a and b to match the Hagena scaling law. The table below summarizes the values of thee constants for given intervals of Hagena parameter. These intervals are considered in the GUI.
