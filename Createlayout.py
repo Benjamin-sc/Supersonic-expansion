@@ -15,8 +15,11 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 
+
+
 from ClustersizeTab_class import *
 from ShockwaveTab_class import *
+from SchlierenTab_class import *
 
 
 class CreateLayout:
@@ -27,9 +30,11 @@ class CreateLayout:
 
         clustersize_tab = ClustersizeTab(tab_control)
         shockwave_tab = ShockwaveTab(tab_control)
+        schlieren_tab = SchlierenTab(tab_control)
 
         tab_control.add(clustersize_tab, text="Average cluster size determination")
         tab_control.add(shockwave_tab, text="Circular nozzle shock waves")
+        tab_control.add(schlieren_tab, text="Schlieren analysis")
         
         tab_control.pack(expand=1, fill="both")
 
