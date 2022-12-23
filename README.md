@@ -2,7 +2,7 @@
 Tkinter GUI to characterize a supersonic expansion of a gas expanding into the vacuum after passing through a nozzle.
 
 # Introduction
-This tkinter GUI contains several tabs that allow to characterize a supersonic expansion that is use in a wide range of scientific domains. The first tab is used to estimate the average cluster size of the clusters formed during the expansion. The second tab is used to estimate the distance of the Mach disk from the nozzle in function of the conditions. These two properties are essential when designing an experiment.
+This tkinter GUI contains several tabs that allow to characterize a supersonic expansion that is use in a wide range of scientific domains. The first tab is used to estimate the average cluster size of the clusters formed during the expansion. The second tab is used to estimate the distance of the Mach disk from the nozzle in function of the conditions. These two properties are essential when designing an experiment. The third one is used to process Schlieren images. An optical system often used to visualize and quantify changes in density. 
 
 # Average cluster size determination 
 A Gas cluster is a small particle that can contain 100 to 10 000 atoms bound together by Van Der Waals forces. Neutral clusters are produced in a supersonic expansion where a high pressure of gas is forced through a nozzle. The gas undergoes an adiabatic expansion and the clusters are formed upon cooling.
@@ -43,6 +43,7 @@ The second tab offers 3 frames to be filled in by the user:
 The third tab is used to load Schlieren images or videos:
 - 1) *Schlieren imaging of a supersonic jet*. Image showing a Schlieren image system. The user can load the image and there is an interrogation box to describe the system.
 - 2) *Load video and images*. The user can load here gray or RGB video and perform a background substraction. 
+- 3) *Quantification*. The goal here is to process the Schlieren image to quantify the density changes in the expansion. For that the user needs to load a calibration perfomed with a lens of known focal. 
 
 
 ![GUI3](https://user-images.githubusercontent.com/80101412/209349010-b0a189ad-f2aa-4f61-8292-1032421ede2d.PNG)
