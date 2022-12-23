@@ -40,6 +40,13 @@ The second tab offers 3 frames to be filled in by the user:
 
 ![GUI2](https://user-images.githubusercontent.com/80101412/173371820-c7ab80ea-1028-4c1c-89ba-0a6b19778557.PNG)
 
+The third tab is used to load Schlieren images or videos:
+- 1) *Schlieren imaging of a supersonic jet*. Image showing a Schlieren image system. The user can load the image and there is an interrogation box to describe the system.
+- 2) *Load video and images*. The user can load here gray or RGB video and perform a background substraction. 
+
+
+![GUI3](https://user-images.githubusercontent.com/80101412/209349010-b0a189ad-f2aa-4f61-8292-1032421ede2d.PNG)
+
 
 # References
 
