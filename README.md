@@ -43,7 +43,7 @@ The second tab offers 3 frames to be filled in by the user:
 The third tab is used to load Schlieren images or videos:
 - 1) *Schlieren imaging of a supersonic jet*. Image showing a Schlieren image system. The user can load the image and there is an interrogation box to describe the system.
 - 2) *Load video and images*. The user load can play here gray or RGB video and perform a background substraction (Gaussian mixture-based Background/Foreground segmentation). The background uses two parameters that can be tuned by the user; a treshold and history value. The gray buttons can be pressed to get the information concerning these two parameters. The last button can be used to add a visual timer on the final video output. The video will be saved at the fps indicated by the user. 
-- 3) *Quantification*. The goal here is to process the Schlieren image to quantify the density changes in the expansion. For that the user needs to load a calibration perfomed with a lens of known focal. 
+- 3) *Quantification*. The goal here is to process the Schlieren image to quantify the density changes in the expansion. A calibration in Schlieren imaging can be obtained with a lens with a large focal length f [6]. This lens will provide a quantifiable relationship between the deviation angle and the pixel gray value intensity. Indeed a light ray which passes through an arbitrary location on the lens (r) will be refracted through an angle /epsilon. The user get measure the gray pixel intensity value for different location r on the lens and compute a deviation angle (r/f = tan /epsilon) and load the values from an excel. These values will be used to convert the gray image in deviation and density image.
 
 
 
@@ -61,3 +61,5 @@ The third tab is used to load Schlieren images or videos:
 [4] Buck, U. & Krohne, R. Cluster size determination from diffractive He atom scattering. J. Chem. Phys. 105(13), 5408–5415 (1996).
 
 [5] Lu, H., Ni, G., Li, R. & Xu, Z. An experimental investigation on the performance of conical nozzles for argon cluster formation in supersonic jets. J. Chem. Phys. 132(12), 124303 (2010).
+
+[6] M.J.H. Ã, G.S. Settles, Opt. Lasers Eng. 50 (2012) 8–17.
