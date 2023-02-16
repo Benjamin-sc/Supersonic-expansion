@@ -23,6 +23,7 @@ from PIL import ImageTk, Image                                                  
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import cv2
+import time
 
 
 class SchlierenTab(tk.Frame):
@@ -54,8 +55,8 @@ class SchlierenTab(tk.Frame):
         
         # instance variable
         
-        self.checksave = tk.IntVar()
         self.I1                = None                                           # Image 1
+        self.cap                = None                                           # Image 1
         self.IM_thresholded_loop = None    
         self.IM_density       = None                                      
         self.I1_ar             = None                                           # Image 1 in array format
@@ -114,8 +115,8 @@ class SchlierenTab(tk.Frame):
                                         activebackground = "Black",
                                         command = self.Load_RGB)
         self.buttonbackground= Button(self.frame2)
-        self.buttonbackground.configure(text="Background substraction",
-                                        bg = "Steel Blue",
+        self.buttonbackground.configure(text="Background substraction (saved as output_BGS.avi)",
+                                        bg = "green",
                                         fg = "White",
                                         activeforeground = "White",
                                         activebackground = "Black",
@@ -145,9 +146,37 @@ class SchlierenTab(tk.Frame):
                                         activebackground = "Black",
                                         command = self.Question3)
         
-        self.checkSave = Checkbutton(self.frame2)
-        self.checkSave.configure(text = "save",
-                                       variable = self.checksave)
+        self.buttonTimer= Button(self.frame2)
+        self.buttonTimer.configure(text="Add timer (saved as output_Timer.avi)",
+                                        bg = "Steel Blue",
+                                        fg = "White",
+                                        activeforeground = "White",
+                                        activebackground = "Black",
+                                        command = self.add_timer)
+        
+        self.spinboxFrameSec = Spinbox(self.frame2)
+        self.spinboxFrameSec.insert(END, 20000)
+        
+        self.spinboxOutFrameSec = Spinbox(self.frame2)
+        self.spinboxOutFrameSec.insert(END, 10)
+        
+        
+        
+        self.buttonQuestion10= Button(self.frame2, width= 6)
+        self.buttonQuestion10.configure(text="Real Frames/s",
+                                        bg = "grey",
+                                        fg = "White",
+                                        activeforeground = "White",
+                                        activebackground = "Black",
+                                        command = self.Question10)
+        
+        self.buttonQuestion11= Button(self.frame2, width= 6)
+        self.buttonQuestion11.configure(text="Out Frames/sec",
+                                        bg = "grey",
+                                        fg = "White",
+                                        activeforeground = "White",
+                                        activebackground = "Black",
+                                        command = self.Question11)
         
         # ===== frame 3 =====
         
@@ -160,28 +189,48 @@ class SchlierenTab(tk.Frame):
                                         command = self.Load_quantification)
         
         self.buttonCalibration= Button(self.frame3)
-        self.buttonCalibration.configure(text="Load and plot calibration",
+        self.buttonCalibration.configure(text="Load and plot calibration (excel)",
                                         bg = "Steel Blue",
                                         fg = "White",
                                         activeforeground = "White",
                                         activebackground = "Black",
                                         command = self.Plot_calibration)
         
-        self.spinboxTresholdQuantification = Spinbox(self.frame3)
-        self.spinboxTresholdQuantification.insert(END, 2)
         
-        self.buttonQuestion4= Button(self.frame3, width= 10)
-        self.buttonQuestion4.configure(text="Treshold?",
+        self.spinboxGrayValueColumnExcel = Spinbox(self.frame3)
+        self.spinboxGrayValueColumnExcel.insert(END, 1)
+        self.spinboxrColumnExcel = Spinbox(self.frame3)
+        self.spinboxrColumnExcel.insert(END, 2)
+        self.spinboxAngleColumnExcel = Spinbox(self.frame3)
+        self.spinboxAngleColumnExcel.insert(END, 4)
+        self.spinboxLenQualibratonExcel = Spinbox(self.frame3)
+        self.spinboxLenQualibratonExcel.insert(END, 176)
+        
+        self.buttonQuestion4a= Button(self.frame3, width= 20)
+        self.buttonQuestion4a.configure(text="Gray values column",
                                         bg = "grey",
                                         fg = "White",
                                         activeforeground = "White",
                                         activebackground = "Black",
-                                        command = self.Question4)
+                                        command = self.Question4a)
         
-        self.spinboxLenQualibratonExcel = Spinbox(self.frame3)
-        self.spinboxLenQualibratonExcel.insert(END, 176)
+        self.buttonQuestion4b= Button(self.frame3, width= 20)
+        self.buttonQuestion4b.configure(text="r values column",
+                                        bg = "grey",
+                                        fg = "White",
+                                        activeforeground = "White",
+                                        activebackground = "Black",
+                                        command = self.Question4b)
         
-        self.buttonQuestion5= Button(self.frame3, width= 16)
+        self.buttonQuestion4c= Button(self.frame3, width= 20)
+        self.buttonQuestion4c.configure(text="Angle column",
+                                        bg = "grey",
+                                        fg = "White",
+                                        activeforeground = "White",
+                                        activebackground = "Black",
+                                        command = self.Question4c)
+        
+        self.buttonQuestion5= Button(self.frame3, width= 20)
         self.buttonQuestion5.configure(text="Number data point",
                                         bg = "grey",
                                         fg = "White",
@@ -288,36 +337,51 @@ class SchlierenTab(tk.Frame):
         
         self.buttonLoad.grid(column = 0, row = 0, columnspan = 2,sticky = "EW")
         self.buttonLoad2.grid(column = 0, row = 1, columnspan = 2,sticky = "EW")
-        self.buttonbackground.grid(column = 0, row = 2, columnspan = 2,sticky = "EW")
+        self.buttonbackground.grid(column = 0, row = 2, columnspan = 2,rowspan = 2,sticky = "NESW")
+        self.buttonTimer.grid(column = 0, row = 4, columnspan = 2,rowspan = 2,sticky = "NESW")
         
         self.spinboxTreshold.grid(column = 2, row = 2, columnspan = 2,sticky = "EW")
         self.spinboxHistory.grid(column = 2, row = 3, columnspan = 2,sticky = "EW")
         self.buttonQuestion2.grid(column = 3, row = 2,sticky = "EW")
         self.buttonQuestion3.grid(column = 3, row = 3,sticky = "EW")
-        self.checkSave.grid(column = 4, row = 2, rowspan = 2,sticky = "NESW")
+        
+        self.spinboxFrameSec.grid(column = 2, row = 4, columnspan = 2,sticky = "EW")
+        self.spinboxOutFrameSec.grid(column = 2, row = 5, columnspan = 2,sticky = "EW")
+        self.buttonQuestion10.grid(column = 3, row = 4,sticky = "EW")
+        self.buttonQuestion11.grid(column = 3, row = 5,sticky = "EW")
         
         # (frame3)
         
         self.buttonLoadQuantification.grid(column = 0, row = 0,sticky = "EW")
         self.buttonCalibration.grid(column = 0, row = 1,sticky = "EW")
-        self.spinboxTresholdQuantification.grid(column = 1, row = 2,sticky = "EW")
-        self.buttonQuestion4.grid(column = 2, row = 2,sticky = "EW")
-        self.spinboxLenQualibratonExcel.grid(column = 1, row = 1,sticky = "EW")
-        self.buttonQuestion5.grid(column = 2, row = 1,sticky = "EW")
-        self.buttonDeflection.grid(column = 0, row = 2,sticky = "EW")
-        self.labelImage_density.grid(column = 0, row = 3,columnspan = 3, sticky = "NESW")
-        self.buttonQuestion6.grid(column = 0, row = 4,sticky = "EW")
-        self.spinboxk.grid(column = 1, row = 4,sticky = "EW")
-        self.buttonQuestion7.grid(column = 0, row = 5,sticky = "EW")
-        self.spinboxf.grid(column = 1, row = 5,sticky = "EW")
-        self.buttonQuestion8.grid(column = 0, row = 6,sticky = "EW")
-        self.spinboxdref.grid(column = 1, row = 6,sticky = "EW")
-        self.buttonQuestion9.grid(column = 0, row = 7,sticky = "EW")
-        self.spinboxpixelresolution.grid(column = 1, row = 7,sticky = "EW")
-        self.checkLconstant.grid(column = 0, row = 8,sticky = "EW")
-        self.checkLvariable.grid(column = 0, row = 9,sticky = "EW")
-        self.spinboxL.grid(column = 1, row = 8,rowspan =2, sticky = "EW")
-        self.buttonDensity.grid(column = 0, row = 10,sticky = "EW")
+
+        
+        self.spinboxGrayValueColumnExcel.grid(column = 1, row = 1,sticky = "EW")
+        self.spinboxrColumnExcel.grid(column = 1, row = 2,sticky = "EW")
+        self.spinboxAngleColumnExcel.grid(column = 1, row = 3,sticky = "EW")
+        self.spinboxLenQualibratonExcel.grid(column = 1, row = 4,sticky = "EW")
+        
+        self.buttonQuestion4a.grid(column = 2, row = 1,sticky = "EW")
+        self.buttonQuestion4b.grid(column = 2, row = 2,sticky = "EW")
+        self.buttonQuestion4c.grid(column = 2, row = 3,sticky = "EW")
+        self.buttonQuestion5.grid(column = 2, row = 4,sticky = "EW")
+        
+        
+        
+        self.buttonDeflection.grid(column = 0, row = 5,sticky = "EW")
+        self.labelImage_density.grid(column = 0, row = 6,columnspan = 3, sticky = "NESW")
+        self.buttonQuestion6.grid(column = 0, row = 7,sticky = "EW")
+        self.spinboxk.grid(column = 1, row = 7,sticky = "EW")
+        self.buttonQuestion7.grid(column = 0, row = 8,sticky = "EW")
+        self.spinboxf.grid(column = 1, row = 8,sticky = "EW")
+        self.buttonQuestion8.grid(column = 0, row = 9,sticky = "EW")
+        self.spinboxdref.grid(column = 1, row = 9,sticky = "EW")
+        self.buttonQuestion9.grid(column = 0, row = 10,sticky = "EW")
+        self.spinboxpixelresolution.grid(column = 1, row = 10,sticky = "EW")
+        self.checkLconstant.grid(column = 0, row = 11,sticky = "EW")
+        self.checkLvariable.grid(column = 0, row = 12,sticky = "EW")
+        self.spinboxL.grid(column = 1, row = 11,rowspan =2, sticky = "EW")
+        self.buttonDensity.grid(column = 0, row = 13,sticky = "EW")
         
         
         
@@ -331,11 +395,14 @@ class SchlierenTab(tk.Frame):
         
     def Load_gray(self):
 
-        print('hello')
-        cap = cv2.VideoCapture('video_test.avi')
+        file_path_load_gray = filedialog.askopenfilename(initialdir = "C:/Users/tomasetti/python projects/Argon cluster size determination/Tab by class ",
+                                       title = "Select Image 1",
+                                       filetypes = (("All Files", "*.avi;*.mp4;*.jpg"),
+                                                    ("JPG Files", "*.jpg")))
+        self.cap = cv2.VideoCapture(file_path_load_gray)
         
-        while(cap.isOpened()):
-            ret, frame = cap.read()
+        while(self.cap.isOpened()):
+            ret, frame = self.cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             cv2.imshow('Gray video', gray)
             
@@ -343,14 +410,19 @@ class SchlierenTab(tk.Frame):
             if cv2.waitKey(1) & 0XFF == ord('q'):
                 break
             
-        cap.release()
+        self.cap.release()
         cv2.destroyAllWindows()
         
         
     def Load_RGB(self):
 
-        print('hello')
-        cap = cv2.VideoCapture('video_test.avi')
+        file_path_load_RGB = filedialog.askopenfilename(initialdir = "C:/Users/tomasetti/python projects/Argon cluster size determination/Tab by class ",
+                                       title = "Select Image 1",
+                                       filetypes = (("All Files", "*.avi;*.mp4;*.jpg"),
+                                                    ("JPG Files", "*.jpg")))
+
+
+        cap = cv2.VideoCapture(file_path_load_RGB)
         
         while(cap.isOpened()):
             ret, frame = cap.read()
@@ -385,43 +457,145 @@ class SchlierenTab(tk.Frame):
         self.I1 = PIL.Image.open(file_path)                                     # Open the image
         self.I1Orig = self.I1                                                   # Save original image for plotting
         self.I1_ar = (np.array(self.I1))                            # Convert image to array
-        plt.imshow(self.I1_ar)
+        plt.imshow(self.I1_ar,cmap='gray')
         plt.colorbar()
         
         
     def backgound_substraction(self):
         
+        file_path = filedialog.askopenfilename(initialdir = "C:/Users/tomasetti/python projects/Argon cluster size determination/Tab by class ",
+                                       title = "Select Image 1",
+                                       filetypes = (("All Files", "*.avi;*.mp4;*.jpg"),
+                                                    ("JPG Files", "*.jpg")))
+        cap = cv2.VideoCapture(file_path)
+        
+        
         treshold = int(self.spinboxTreshold.get())
         history = int(self.spinboxHistory.get())
         
-        cap = cv2.VideoCapture('video_test.avi')
+        
         fgbg = cv2.createBackgroundSubtractorMOG2(history = history, varThreshold = treshold,detectShadows=False)
         
-        if self.checksave.get()==1:
-            ret, frame = cap.read()
-            size = frame[0].shape[1], frame[0].shape[0]
-            out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (size))
+        ret, frame = cap.read()
+        x = frame.shape[1]
+        y = frame.shape[0]
 
-        while True:
+        fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+        out = cv2.VideoWriter('output_BGS.avi',fourcc, 10, (x,y),isColor=False)
+
+        while (cap.isOpened()):
     
             ret, frame = cap.read()
     
-            if frame is None:
+            # if video finished or no Video Input
+            if not ret:
                 break
+            
+            fgmask = frame
     
             fgmask = fgbg.apply(frame)
             cv2.imshow('frame',fgmask)
-            if self.checksave.get()==1:
-                out.write(fgmask)
+
+            out.write(fgmask)
 
     
-            keyboard = cv2.waitKey(30)                                          # we use the waitKey() after imshow() function to pause each frame in the video
-            if keyboard =='q':
+            # press 'Q' if you want to exit
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
     
         cap.release()
-        if self.checksave.get()==1:
-            out.release()
+        out.release()
+        cv2.destroyAllWindows()
+        
+    def add_timer(self):
+        
+        file_path = filedialog.askopenfilename(initialdir = "C:/Users/tomasetti/python projects/Argon cluster size determination/Tab by class ",
+                                       title = "Select Image 1",
+                                       filetypes = (("All Files", "*.avi;*.mp4;*.jpg"),
+                                                    ("JPG Files", "*.jpg")))
+        cap = cv2.VideoCapture(file_path)
+        ret, frame = cap.read()
+        x = frame.shape[1]
+        y = frame.shape[0]
+        
+        fps_out = int(self.spinboxOutFrameSec.get())
+        fps_real = int(self.spinboxFrameSec.get())
+        
+        
+        # Define the codec and create VideoWriter object
+        fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+        out = cv2.VideoWriter('output.avi',fourcc, fps_out, (x,y))
+        #out = cv2.VideoWriter('output.avi', -1, 20.0, (512,128))
+          
+        # used to record the time when we processed last frame
+        prev_frame_time = 0
+          
+        # used to record the time at which we processed current frame
+        new_frame_time = 0
+
+        frame_count = -1
+          
+        # Reading the video file until finished
+        while(cap.isOpened()):
+          
+            # Capture frame-by-frame
+          
+            ret, frame = cap.read()
+          
+            # if video finished or no Video Input
+            if not ret:
+                break
+          
+            # Our operations on the frame come here
+            gray = frame
+          
+            # resizing the frame size according to our need
+            #gray = cv2.resize(gray, (500, 300))
+          
+            # font which we will be using to display FPS
+            font = cv2.FONT_ITALIC 
+            # time when we finish processing for this frame
+            new_frame_time = time.time()
+            
+            # count the frames
+            frame_count  = frame_count + 1
+
+          
+            # Calculating the fps
+          
+            # fps will be number of frame processed in given time frame
+            # since their will be most of time error of 0.001 second
+            # we will be subtracting it to get more accurate result
+            fps = 1/(new_frame_time-prev_frame_time)
+            prev_frame_time = new_frame_time
+            
+          
+            # converting the fps into integer
+            fps = int(fps)
+            realtime = frame_count/fps_real*1000
+            realtime = round(realtime,2)
+          
+            # converting the fps to string so that we can display it on frame
+            # by using putText function
+            realtime = str(realtime) + 'ms'
+          
+            # putting the FPS count on the frame
+            cv2.putText(gray, realtime, (180, 30), font, 1, (255, 255, 255), 3, cv2.LINE_AA)
+          
+            # displaying the frame with fps
+            cv2.imshow('frame', gray)
+            
+            # write the flipped frame
+            out.write(gray)
+          
+            # press 'Q' if you want to exit
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        print(fps)
+        # When everything done, release the capture
+        cap.release()
+        out.release()
+        # Destroy the all windows now
         cv2.destroyAllWindows()
         
     def Plot_calibration(self):
@@ -436,28 +610,21 @@ class SchlierenTab(tk.Frame):
         df = pd.read_excel(file_path)  
         arr = df.to_numpy()
 
-              
+        #Dimension of the data from the excel of the calibration      
         Data_len = int(self.spinboxLenQualibratonExcel.get())
+        gray_value_column = int(self.spinboxGrayValueColumnExcel.get())
+        gray_value_column = int(self.spinboxrColumnExcel.get())
+        angle_column = int(self.spinboxAngleColumnExcel.get())
 
-        self.Gray_value, self.r, self.angle_deg = arr[1:Data_len, 2], arr[1:Data_len, 3], arr[1:Data_len, 5]
+        self.Gray_value, self.r, self.angle_deg = arr[1:Data_len, gray_value_column], arr[1:Data_len, gray_value_column], arr[1:Data_len, angle_column]
         x = np.arange(0, len(self.Gray_value),1)
         
         #interpolation of calibration curve
         
-        f = interpolate.interp1d(x, self.Gray_value)
-        xnew = np.arange(0, len(self.Gray_value)-1,0.5)
-        self.Gray_value_interp = f(xnew)   # use interpolation function returned by `interp1d`
-
-
-        z = interpolate.interp1d(x, self.angle_deg)
-        xnew = np.arange(0, len(self.angle_deg)-1,0.5)
-        self.angle_deg_interp = z(xnew)   # use interpolation function returned by `interp1d`
-        
-        
-        
+        f = interpolate.interp1d(self.Gray_value, self.angle_deg)
                                             
         # plotting the calibration line
-        plt.plot(x, self.Gray_value, 'o', xnew, self.Gray_value_interp, '-')
+        plt.plot(self.Gray_value, self.angle_deg, 'o', self.Gray_value, f(self.Gray_value), '-')
       
         # putting labels
         plt.xlabel('Distance (pixels)', fontsize=14)
@@ -477,29 +644,27 @@ class SchlierenTab(tk.Frame):
         elif self.Gray_value is None:
             messagebox.showinfo ("warning","Before, you need to load the Calibration data")
         else:
-            print('hello')
-            treshold = int(self.spinboxTresholdQuantification.get())
-            
-            
+           
+            f = interpolate.interp1d(self.Gray_value, self.angle_deg)
             self.IM_thresholded_loop = np.zeros((len(self.I1_ar[:,1]),len(self.I1_ar[1]))); #allocate space for thresholded image
 
             for i in np.arange(0,len(self.I1_ar[:,1])):                                             #loop over all rows and columns
                 for j in np.arange(0,len(self.I1_ar[1])):
-
-                    pixel=self.I1_ar[i,j]                                        #get pixel value
-
-                    for k in np.arange(0,len(self.Gray_value_interp)):                            # check pixel value and assign new value
-                        if abs(pixel-self.Gray_value_interp[k])<=treshold:
-                            new_pixel=self.angle_deg_interp[k]
-                            
-                            break
-                        else: 
-                            new_pixel = 0
-
-                    print(new_pixel)
-                    self.IM_thresholded_loop[i,j] =new_pixel               # save new pixel value in thresholded image
                     
-            plt.imshow(self.IM_thresholded_loop, cmap='RdBu')
+                    if np.min(self.Gray_value) <= self.I1_ar[i,j] <= np.max(self.Gray_value):
+                        
+                        self.IM_thresholded_loop[i,j]=f(self.I1_ar[i,j]) 
+                    
+                    elif self.I1_ar[i,j] <= np.min(self.Gray_value):
+                        
+                        self.IM_thresholded_loop[i,j] =f(np.min(self.Gray_value))
+                        
+                    elif self.I1_ar[i,j] >= np.max(self.Gray_value):
+                            
+                        self.IM_thresholded_loop[i,j] =f(np.max(self.Gray_value))
+                        
+                    
+            plt.imshow(self.IM_thresholded_loop, cmap='gray_r')
             plt.colorbar()
             
     def Compute_density(self):
@@ -538,16 +703,22 @@ class SchlierenTab(tk.Frame):
         
         
     def Question1(self):
-        messagebox.showinfo ("information :","")
+        messagebox.showinfo ("information :","Schematic representation of a Schlieren imaging set up. This image is illustrative and you can put your own set-up image")
         
     def Question2(self):
-        messagebox.showinfo ("information :","")
+        messagebox.showinfo ("information :","Gaussian Mixture-based Background/Foreground Segmentation: Threshold on the squared Mahalanobis distance between the pixel and the model to decide whether a pixel is well described by the background model. This parameter does not affect the background update.")
         
     def Question3(self):
-        messagebox.showinfo ("information :","how many previous frames are used for building the background model. So basically if an item is standing at a fixed position for as many frames as the history size, then it will disappear in the background.")
+        messagebox.showinfo ("information :","Gaussian Mixture-based Background/Foreground Segmentation: how many previous frames are used for building the background model. So basically if an item is standing at a fixed position for as many frames as the history size, then it will disappear in the background.")
     
-    def Question4(self):
-        messagebox.showinfo ("information :","This threshold value is used in the loop that replace the pixel gray value by an deflection value from the calibration curve. If the pixel intensity difference between the image and any pixel intensity from the clibration curve is smaller than this treshold value, the pixel from the image is replace by the deflection value ")
+    def Question4a(self):
+        messagebox.showinfo ("information :","Excel column number of your gray values data")
+    
+    def Question4b(self):
+        messagebox.showinfo ("information :","Excel column number of your r values")
+    
+    def Question4c(self):
+        messagebox.showinfo ("information :","Excel column number of your deviation angle values.")
         
     def Question5(self):
         messagebox.showinfo ("information :","Indicates the number of data point of you calibration curve")
@@ -563,3 +734,9 @@ class SchlierenTab(tk.Frame):
             
     def Question9(self):
             messagebox.showinfo ("information :","Distance in m between two pixels")
+            
+    def Question10(self):
+            messagebox.showinfo ("information :","Real Frame/s of the initial video used to implement the timer")
+            
+    def Question11(self):
+            messagebox.showinfo ("information :","Desired Frame/s of the final video")
