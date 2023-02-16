@@ -42,11 +42,12 @@ The second tab offers 3 frames to be filled in by the user:
 
 The third tab is used to load Schlieren images or videos:
 - 1) *Schlieren imaging of a supersonic jet*. Image showing a Schlieren image system. The user can load the image and there is an interrogation box to describe the system.
-- 2) *Load video and images*. The user can load here gray or RGB video and perform a background substraction. 
+- 2) *Load video and images*. The user load can play here gray or RGB video and perform a background substraction (Gaussian mixture-based Background/Foreground segmentation). The background uses two parameters that can be tuned by the user; a treshold and history value. The gray buttons can be pressed to get the information concerning these two parameters. The last button can be used to add a visual timer on the final video output. The video will be saved at the fps indicated by the user. 
 - 3) *Quantification*. The goal here is to process the Schlieren image to quantify the density changes in the expansion. For that the user needs to load a calibration perfomed with a lens of known focal. 
 
 
-![GUI3](https://user-images.githubusercontent.com/80101412/209349010-b0a189ad-f2aa-4f61-8292-1032421ede2d.PNG)
+
+![GUI3](https://user-images.githubusercontent.com/80101412/219381511-368865a0-c9a1-443a-91c8-76488e3d2e57.PNG)
 
 
 # References
